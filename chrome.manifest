@@ -1,0 +1,2 @@
+content     unittest-cache-addon   content/
+overlay     chrome://browser/content/browser.xul    chrome://unittest-cache-addon/content/browser.xul
