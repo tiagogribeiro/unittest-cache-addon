@@ -1,2 +1,5 @@
-content     addon-app   content/
-overlay     chrome://browser/content/browser.xul    chrome://addon-app/content/browser.xul
+content     unittest-addon                     chrome/content/
+skin	    unittest-addon	   classic/1.0	   chrome/skin/
+
+overlay     chrome://browser/content/browser.xul                    chrome://unittest-addon/content/unittest-addon.xul
+style       chrome://unittest-addon/content/unittest-addon.xul      chrome://unittest-addon/skin/unittest-addon.css
