@@ -9,13 +9,12 @@
                 
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton 
-		 id="xulunittest-icon-button"
+		 id="unittest-icon-button"
 		 class="toolbarbutton-1"		  
 		 label="UnitTest"	
 		 tooltiptext="Clique para visualizar os resultados dos últimos testes unitários." 		 
-		 oncommand="alert('Em desenvolvimento');"
-                 badge="0"
-                 badgeColor="#00AAAA"/>		
-	</toolbarpalette>  
+		 oncommand="alert('teste');" 
+		 popup="xulunittest-panel"/>		
+	</toolbarpalette>
   
 </overlay>
