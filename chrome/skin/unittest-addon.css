@@ -1,9 +1,3 @@
-.icon-button-success {
-    list-style-image: url("chrome://unittest-addon/skin/icon.png"); 
-}
-.icon-button-error {
-    list-style-image: url("chrome://unittest-addon/skin/icon.png"); 
-}
 #xulunittest-icon-button
 { 
     list-style-image: url("chrome://unittest-addon/skin/icon.png"); 
