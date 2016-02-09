@@ -9,7 +9,7 @@
                 
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton 
-		 id="unittest-icon-button"
+		 id="xulunittest-icon-button"
 		 class="toolbarbutton-1"		  
 		 label="UnitTest"	
 		 tooltiptext="Clique para visualizar os resultados dos últimos testes unitários." 		 
