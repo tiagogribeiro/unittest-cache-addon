@@ -122,7 +122,7 @@ var AddonUnitTest = {
             var ajax   = this.ajax; 
             window.setTimeout(function(){
                 utilAddon.load( addon.config.testHost, addon._getFilter() , addon._callbackMonitor );
-                addon.monitorTest();
+                addon._monitor();
             },this.config.timeCheckTest );
         } catch(e) {
             console.warn("Falha monitoramento do addon-unittest - "+e.stack());
