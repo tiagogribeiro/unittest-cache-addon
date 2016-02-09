@@ -3,6 +3,6 @@
     list-style-image: url("chrome://unittest-addon/skin/icon.png"); 
 }
 
-toolbar[iconsize="small"] #xulunittest-icon-button { 
+toolbar[iconsize="small"] #unittest-icon-button { 
 	list-style-image: url("chrome://unittest-addon/skin/icon.png"); 
 }
