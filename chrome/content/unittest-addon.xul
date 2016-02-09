@@ -2,7 +2,11 @@
 <?xml-stylesheet href="chrome://unittest-addon/skin/unittest-addon.css" type="text/css"?>
 <overlay id="unittest-addon" 
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
+         
+        <!-- Js Addon -->
+        <script type="application/x-javascript"
+                src="chrome://stockwatcher2/content/unittest-addon.js"></script>
+                
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton 
 		 id="xulunittest-icon-button"
