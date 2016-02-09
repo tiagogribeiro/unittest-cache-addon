@@ -5,7 +5,7 @@
          
         <!-- Js Addon -->
         <script type="application/x-javascript"
-                src="chrome://content/unittest-addon.js"></script>
+                src="chrome://unittest-addon/content/unittest-addon.js"></script>
                 
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton 
