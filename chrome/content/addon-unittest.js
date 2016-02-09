@@ -71,24 +71,32 @@ var AddonUnitTest = {
      * Obter a quantidade de testes com sucesso.
      * @returns {undefined}
      */
-    getCountSuccess : function(){
-        this._getIconStatus().className = "icon-button-success";
+    setCountSuccess : function( count ){
+        this._getIconStatus().value = count + "Test(s)";
     },
 
     /**
      * Obter a quantidade de testes com erro.
      * @returns {undefined}
      */
-    getCountErros : function(){
-        this._getIconStatus().className = "icon-button-error";
+    setCountErros : function( count ){
+        this._getIconStatus().value = count + "Test(s)";
     },
 
     /**
      * Obter o icone a ser mostrado.
      * @returns {undefined}
      */
-    _getIconStatus : function(){
-        return document.getElementsByName("xulunittest-icon-button");
+    _getIconError : function(){
+        return document.getElementsById("unittest-total-error");
+    },
+    
+    /**
+     * Obter o icone a ser mostrado.
+     * @returns {undefined}
+     */
+    _getIconSuccess : function(){
+        return document.getElementsById("unittest-total-test");
     },
 
 
@@ -100,6 +108,8 @@ var AddonUnitTest = {
     _callbackMonitor : function( results ){
         if (results !== null || results !== ""){
              alert("Buscou os dados..."+results);
+             AddonUnitTest.setCountErros(1);
+             AddonUnitTest.setCountSuccess(2);
         }
     },
 
