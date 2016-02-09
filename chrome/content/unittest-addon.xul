@@ -5,7 +5,7 @@
          
         <!-- Js Addon -->
         <script type="application/x-javascript"
-                src="chrome://stockwatcher2/content/unittest-addon.js"></script>
+                src="chrome://content/unittest-addon.js"></script>
                 
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton 
@@ -13,7 +13,9 @@
 		 class="toolbarbutton-1"		  
 		 label="UnitTest"	
 		 tooltiptext="Clique para visualizar os resultados dos últimos testes unitários." 		 
-		 oncommand="alert('Em desenvolvimento');" />		
+		 oncommand="alert('Em desenvolvimento');"
+                 badge="0"
+                 badgeColor="#00AAAA"/>		
 	</toolbarpalette>  
   
 </overlay>

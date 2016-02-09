@@ -49,7 +49,7 @@ var utilAddon = {
      * @returns {utilAddon@pro;prefs@call;getCharPref}
      */
     getPref : function( keyPref ){
-        if ( keyPref === null) throw ("Chave para preferencia deve ser enviada.");
+        if ( keyPref === null) throw ("Chave para preferência deve ser enviada.");
         if (this.prefs !== null )
             return this.prefs.getCharPref( keyPref );
         else
@@ -67,16 +67,28 @@ var AddonUnitTest = {
          testModule : ''
     },
     
+    /**
+     * Obter a quantidade de testes com sucesso.
+     * @returns {undefined}
+     */
     getCountSuccess : function(){
-
+        this._getIconStatus().className = "icon-button-success";
     },
 
+    /**
+     * Obter a quantidade de testes com erro.
+     * @returns {undefined}
+     */
     getCountErros : function(){
-
+        this._getIconStatus().className = "icon-button-error";
     },
 
-    getIconStatus : function(){
-
+    /**
+     * Obter o icone a ser mostrado.
+     * @returns {undefined}
+     */
+    _getIconStatus : function(){
+        return document.getElementsByName("xulunittest-icon-button");
     },
 
 
