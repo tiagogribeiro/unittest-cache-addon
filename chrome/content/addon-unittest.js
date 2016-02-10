@@ -59,58 +59,77 @@ var utilAddon = {
 
 var AddonUnitTest = {             
 
+    errosTest : 0,
+    sucessTest: 0,
+    
     // Configurações para funcionamento do addon.
     config : {
          timeCheckTest : 500,
          testNamespace: '',
          testHost : '',
          testModule : ''
-    },
-    
-    /**
-     * Obter a quantidade de testes com sucesso.
-     * @returns {undefined}
-     */
-    setCountSuccess : function( count ){
-        this._getIconStatus().value = count + "Test(s)";
-    },
+    },       
 
     /**
-     * Obter a quantidade de testes com erro.
+     * Atualiza os status dos resultados.
      * @returns {undefined}
      */
-    setCountErros : function( count ){
-        this._getIconStatus().value = count + "Test(s)";
+    upStatus : function(){
+        this._getLabelSuccess().value = this._sucessTest + " Test(s)";
+        this._getLabelError().value   = this._errosTest + " Test(s)";
+        return this;
     },
 
     /**
      * Obter o icone a ser mostrado.
      * @returns {undefined}
      */
-    _getIconError : function(){
+    _getLabelError : function(){
         return document.getElementsById("unittest-total-error");
+        return this;
     },
     
     /**
      * Obter o icone a ser mostrado.
      * @returns {undefined}
      */
-    _getIconSuccess : function(){
+    _getLabelSuccess : function(){
         return document.getElementsById("unittest-total-test");
     },
-
-
+   
+    
     /**
-     * Obtem os resultados e adiciona as variaveis de monitoramento.
-     * @param {type} results
-     * @returns {undefined}
+     * Execute o recursive sobre os resultados obtidos.
+     * @param {String} url
+     * @param {String} filter
+     * @param {int} nivel     
      */
-    _callbackMonitor : function( results ){
-        if (results !== null || results !== ""){
-             alert("Buscou os dados..."+results);
-             AddonUnitTest.setCountErros(1);
-             AddonUnitTest.setCountSuccess(2);
-        }
+    _recursiveResultado : function( url, filter, nivel ){
+        
+        var parseResult = function(){
+            var elemTpAction = document.body.querySelectorAll('tr#tpAction');        
+            var linkDetail   = elemTpAction.querySelectorAll('a');
+
+            for( var indice in elemTpAction ){   
+                // Somente até o resultado dos test unitário, caso queria os detalhes dos testes,
+                // será necessário entrar mais um nível - Tiago G. Ribeiro
+                if (nivel < 3){
+                    var url = linkDetail[indice].href;
+                    nivel++;
+                    this._recursiveResultado( url , null, nivel );
+                } else {
+                    var elemTpNum    = document.body.querySelectorAll('tr#tpNum')[indice];
+                    if (elemTpNum.innerHTML === "success"){
+                        utilAddon._sucessTest++;
+                    } else if (elemTpNum.innerHTML === "failed"){
+                        utilAddon._errosTest++;
+                    }
+                }
+            }    
+        };
+        
+        utilAddon.load( url , filter  , parseResult );
+        return this; 
     },
 
     /**
@@ -127,12 +146,10 @@ var AddonUnitTest = {
      * Pooling de monitoramento dos resultados dos testes.        
      */
     _monitor : function(){ 
-        try  {
-            var addon = this.AddonUnitTest;
-            var ajax   = this.ajax; 
-            window.setTimeout(function(){
-                utilAddon.load( addon.config.testHost, addon._getFilter() , addon._callbackMonitor );
-                addon._monitor();
+        try  {                        
+            window.setTimeout(function(){                
+                this._recursiveResultado( this.config.testHost, this._getFilter(), 0 )
+                    .upStatus();
             },this.config.timeCheckTest );
         } catch(e) {
             console.warn("Falha monitoramento do addon-unittest - "+e.stack());
@@ -150,13 +167,10 @@ var AddonUnitTest = {
         this.config.timeCheckTest = preference.getPref("timeCheck");
        
         // Iniciando o monitoramento dos testes
-        this._monitor();
-        
-    },
-    
-    shutdown: function(){}
+        if (this.config.testHost!=="" && this.config.testNamespace!=="")
+            this._monitor();                
+    }
 
 };
 
 window.addEventListener("load", function(e) { utilAddon.startup(); }, false);
-window.addEventListener("unload", function(e) { utilAddon.shutdown(); }, false);
