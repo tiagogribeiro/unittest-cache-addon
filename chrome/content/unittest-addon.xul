@@ -4,8 +4,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
          
         <!-- Js Addon -->
-        <script type="application/x-javascript"
-                src="chrome://unittest-addon/content/unittest-addon.js"></script>
+        <script src="unittest-addon.js"></script>
         
                 
 	<toolbarpalette id="BrowserToolbarPalette">
