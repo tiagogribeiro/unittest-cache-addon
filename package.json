@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Show unit testing results of Cache Intersystems",
   "main": "index.js",
-  "author": "Lucas A.F. / Tiago R.",
+  "author": "Lucas A.F. / Tiago G. Ribeiro",
   "engines": {
     "firefox": ">=38.0a1"
   },
