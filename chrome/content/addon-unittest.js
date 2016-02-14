@@ -1,4 +1,4 @@
-var utilAddon = {
+var unittestAddonUtil = {
     httpRequest : null,
     prefs       : null,
 
@@ -33,31 +33,31 @@ var utilAddon = {
     
     /**
      * Carrega as definições de preferencia.
-     * @returns {utilAddon}
+     * @returns {unittest_addo_util}
      */
     loadPrefs : function(){
-        this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
+        /*this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
                         .getService(Components.interfaces.nsIPrefService)
-                        .getBranch("unittest-addon.");
-        return this;
+                        .getBranch("unittest-addon.");*/
+        return require('sdk/simple-prefs').prefs['unittest-addon'];
         
     },
     
     /**
      * Obtém uma chave de preferência.
      * @param {type} keyPref
-     * @returns {utilAddon@pro;prefs@call;getCharPref}
+     * @returns {unittest_addo_util@pro;prefs@call;getCharPref}
      */
     getPref : function( keyPref ){
         if ( keyPref === null) throw ("Chave para preferência deve ser enviada.");
         if (this.prefs !== null )
-            return this.prefs.getCharPref( keyPref );
+            return this.prefs[ keyPref ];
         else
             throw ("Preferencias não carregada.");
     }
 };
 
-var AddonUnitTest = {             
+var unittestAddon = {             
 
     errosTest : 0,
     sucessTest: 0,
@@ -75,8 +75,8 @@ var AddonUnitTest = {
      * @returns {undefined}
      */
     upStatus : function(){
-        this._getLabelSuccess().value = this._sucessTest + " Test(s)";
-        this._getLabelError().value   = this._errosTest + " Test(s)";
+        this._setLabelSuccess( this._sucessTest + " Test(s)" );
+        this._setLabelError( this._errosTest + " Test(s)" );
         return this;
     },
 
@@ -84,17 +84,16 @@ var AddonUnitTest = {
      * Obter o icone a ser mostrado.
      * @returns {undefined}
      */
-    _getLabelError : function(){
-        return document.getElementsById("unittest-total-error");
-        return this;
+    _setLabelError : function( value ){
+        document.getElementById("unittest-total-error").value = value;        
     },
     
     /**
      * Obter o icone a ser mostrado.
      * @returns {undefined}
      */
-    _getLabelSuccess : function(){
-        return document.getElementsById("unittest-total-test");
+    _setLabelSuccess : function( value ){
+        document.getElementById("unittest-total-test").value = value;
     },
    
     
@@ -120,15 +119,15 @@ var AddonUnitTest = {
                 } else {
                     var elemTpNum    = document.body.querySelectorAll('tr#tpNum')[indice];
                     if (elemTpNum.innerHTML === "success"){
-                        utilAddon._sucessTest++;
+                        unittestAddonUtil._sucessTest++;
                     } else if (elemTpNum.innerHTML === "failed"){
-                        utilAddon._errosTest++;
+                        unittestAddonUtil._errosTest++;
                     }
                 }
             }    
         };
         
-        utilAddon.load( url , filter  , parseResult );
+        unittestAddonUtil.load( url , filter  , parseResult );
         return this; 
     },
 
@@ -160,17 +159,17 @@ var AddonUnitTest = {
     startup : function(){
        
         // Carregando as preferencias(configurações)
-        var preference = utilAddon.loadPrefs();
-        this.config.testNamespace = preference.getPref("namespace");
-        this.config.testModule    = preference.getPref("module");
-        this.config.testHost      = preference.getPref("host");
-        this.config.timeCheckTest = preference.getPref("timeCheck");
+        var preference = unittestAddonUtil.loadPrefs();
+        unittestAddon.config.testNamespace = preference.getPref("namespace");
+        unittestAddon.config.testModule    = preference.getPref("module");
+        unittestAddon.config.testHost      = preference.getPref("host");
+        unittestAddon.config.timeCheckTest = preference.getPref("timeCheck");
        
         // Iniciando o monitoramento dos testes
-        if (this.config.testHost!=="" && this.config.testNamespace!=="")
-            this._monitor();                
+        if (unittestAddon.config.testHost!=="" && unittestAddon.config.testNamespace!=="")
+            unittestAddon._monitor();                
     }
 
 };
 
-window.addEventListener("load", function(e) { utilAddon.startup(); }, false);
+window.addEventListener("load", function(e) { unittestAddon.startup(); }, false);
