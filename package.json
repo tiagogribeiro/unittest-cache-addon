@@ -1,0 +1,15 @@
+{
+  "title": "UnitTest",
+  "name": "unittest-cache-addon",
+  "version": "0.0.1",
+  "description": "Show unit testing results of Cache Intersystems",
+  "main": "index.js",
+  "author": "Lucas A.F. / Tiago R.",
+  "engines": {
+    "firefox": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}
