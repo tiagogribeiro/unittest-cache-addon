@@ -1,11 +1,12 @@
+"use strict";
 /**
  * Classe utilitária para auxiliar a integração.
  * @author Tiago G. Ribeiro
  * @since 14/02/2016
  */
-var unittestAddonUtil = {
+var UnittestAddonUtil = {
     httpRequest : null,
-    prefs       : null,
+    prefsSDK    : require('sdk/simple-prefs'),
 
     /**
      * Obtém um instância do XMLHTTPRequest browser.
@@ -34,19 +35,7 @@ var unittestAddonUtil = {
             }
         };
         httprequest.send(args || null);
-    },
-    
-    /**
-     * Carrega as definições de preferencia.
-     * @returns {unittest_addo_util}
-     */
-    loadPrefs : function(){
-        /*this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                        .getService(Components.interfaces.nsIPrefService)
-                        .getBranch("unittest-addon.");*/
-        return require('sdk/simple-prefs').prefs['unittest-addon'];
-        
-    },
+    },        
     
     /**
      * Obtém uma chave de preferência.
@@ -56,7 +45,7 @@ var unittestAddonUtil = {
     getPref : function( keyPref ){
         if ( keyPref === null) throw ("Chave para preferência deve ser enviada.");
         if (this.prefs !== null )
-            return this.prefs[ keyPref ];
+            return this.prefsSDK['unittest-addon'].prefs[ keyPref ];
         else
             throw ("Preferencias não carregada.");
     }
@@ -68,9 +57,8 @@ var unittestAddonUtil = {
  * @author Tiago G. Ribeiro
  * @since 14/02/2016
  */
-var unittestAddon = {             
+var UnittestAddon = {             
     
-    // 1 - Nivel modulos    
     matrizResults : [],    
     
     // Configurações para funcionamento do addon.
@@ -108,26 +96,25 @@ var unittestAddon = {
                 // Somente até o resultado dos test unitário, caso queria os detalhes dos testes,
                 // será necessário entrar mais um nível - Tiago G. Ribeiro
                 if (nivel < 4){                   
-                    var url = linkDetail[indice].href;
-                    nivel++;
+                    var url = linkDetail[indice].href;                   
                     this._recursiveResultado( url , null, nivel );
                 } else if ( nivel === 3 ){
-                    module = elemTpAction.innerHTML;
-                    var url = linkDetail[indice].href;
-                    nivel++;
+                    module = linkDetail[indice].innerHTML;
+                    var url = linkDetail[indice].href;                    
                     this._recursiveResultado( url , null, nivel );
                 } else {
                     var elemTpNum    = document.body.querySelectorAll('tr#tpNum')[indice];
                     if (elemTpNum.innerHTML === "success"){
-                        unittestAddonUtil._sucessTest++;
+                        UnittestAddonUtil._sucessTest++;
                     } else if (elemTpNum.innerHTML === "failed"){
-                        unittestAddonUtil._errosTest++;
+                        UnittestAddonUtil._errosTest++;
                     }
                 }
+                nivel++;
             }    
         };
         
-        unittestAddonUtil.load( url , filter  , parseResult );
+        UnittestAddonUtil.load( url , filter  , parseResult );
         return this; 
     },
 
@@ -145,38 +132,29 @@ var unittestAddon = {
      * Pooling de monitoramento dos resultados dos testes.        
      */
     _monitor : function(){ 
-        try  {                        
+        try  {             
+            UnittestAddon.config.testNamespace = UnittestAddonUtil.prefs.getPref("namespace");
+            UnittestAddon.config.testModule    = UnittestAddonUtil.prefs.getPref("module");
+            UnittestAddon.config.testHost      = UnittestAddonUtil.prefs.getPref("host");
+            UnittestAddon.config.timeCheckTest = UnittestAddonUtil.prefs.getPref("timeCheck");
             window.setTimeout(function(){                
-                var result = this._recursiveResultado( this.config.testHost, this._getFilter(), 0 );
+                var result = UnittestAddon._recursiveResultado( UnittestAddon.config.testHost, 
+                                                                UnittestAddon._getFilter(), 0 );
+                
+                
+                
+                 /*var test = '{"list":['+
+                           '{"module":"estoque", "test":"10", "error":"2"}, '+
+                           '{"module":"financeiro", "test":"5", "error":"0"}, '+
+                           '{"module":"comercial", "test":"0", "error":"0"}]}';*/
+       
                 panel.load( result );
             },this.config.timeCheckTest );
         } catch(e) {
             console.warn("Falha monitoramento do addon-unittest - "+e.stack());
         }
-    },
-    
-    // Inicializa o addon.
-    startup : function(){
-       
-        // Carregando as preferencias(configurações)
-        var preference = unittestAddonUtil.loadPrefs();
-        unittestAddon.config.testNamespace = preference.getPref("namespace");
-        unittestAddon.config.testModule    = preference.getPref("module");
-        unittestAddon.config.testHost      = preference.getPref("host");
-        unittestAddon.config.timeCheckTest = preference.getPref("timeCheck");
-       
-        // Iniciando o monitoramento dos testes
-        if (unittestAddon.config.testHost!=="" && unittestAddon.config.testNamespace!=="")
-            unittestAddon._monitor();
-        
-        
-        /*var test = '{"list":['+
-                           '{"module":"estoque", "test":"10", "error":"2"}, '+
-                           '{"module":"financeiro", "test":"5", "error":"0"}, '+
-                           '{"module":"comercial", "test":"0", "error":"0"}]}';*/
-                
     }
 
 };
 
-window.addEventListener("load", function(e) { unittestAddon.startup(); }, false);
+window.addEventListener("load", function(e) { unittestAddon._monitor(); }, false);
