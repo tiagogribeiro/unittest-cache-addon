@@ -37,9 +37,9 @@ function handleHide() {
 // Implementando a lógica dos resultados.
 var NIVEL_ULTIMO = 4;
 var NIVEL_RESULTADO = 3;
-var countResultados = 0;
-var results = [];
-var linhaDeResultado = null;
+var _countResultados = 0;
+var _results = [];
+var _linhaDeResultado = null;
 
 // Definição das configurações.
 var preference = {
@@ -61,46 +61,46 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
 }));
 
 function _isUltimoNivelResultado(){
-  return (countResultados === NIVEL_ULTIMO);
+  return (_countResultados === NIVEL_ULTIMO);
 }
 
 function _isNivelResultadoTest(){
-  return (countResultados === NIVEL_RESULTADO);
+  return (_countResultados === NIVEL_RESULTADO);
 }
 
 function _resultadoDeSucess(){
-  return (/^success$/g.test(linhaDeResultado.innerHTML()) ? true : false);
+  return (/^success$/g.test(_linhaDeResultado.innerHTML()) ? true : false);
 }
 
 function _resultadoDeFalha(){
-  return (/^failed$/g.test(linhaDeResultado.innerHTML()) ? true : false);
+  return (/^failed$/g.test(_linhaDeResultado.innerHTML()) ? true : false);
 }
 
 function _moduloDoResultado(){
-  var result = linhaDeResultado.innerHTML().split('.')[1];
+  var result = _linhaDeResultado.innerHTML().split('.')[1];
   if (result==='')
       throw "Sem definição do módulo do resultado";
   return result;
 }
 
 function _proximaPaginaDeResultado(){
-  linhaDeResultado.child().click();
+  _linhaDeResultado.child().click();
 }
 
 function _existeMaisResultados(){
-  return (linhaDeResultado.length > 0);
+  return (_linhaDeResultado.length > 0);
 }
 
 function _listResultados(){
-  return linhaDeResultado.getElementsById("tpNum");
+  return _linhaDeResultado.getElementsById("tpNum");
 
 }
 
 function _incrementaContagemResultado(){
-    countResultados++;
+    _countResultados++;
 }
 function _setResultado( body ){
-  linhaDeResultado = body.getElementsById('tpAction');
+  _linhaDeResultado = body.getElementsById('tpAction');
 }
 
 function _monteResultado( body ) {
@@ -112,15 +112,15 @@ function _monteResultado( body ) {
 
     if ( _isNivelResultadoTest() ){
         for ( var indice in _listResultados() ) {
-            linhaDeResultado = _listResultados()[indice];
-            results.push({
+            _linhaDeResultado = _listResultados()[indice];
+            _results.push({
                 modulo: _moduloDoResultado(),
                 success: _resultadoDeSucess(),
                 failed: _resultadoDeFalha()
             });
             _incrementaContagemResultado();            
         }
-        console.log( "Resultados:" + results );
+        console.log( "Resultados:" + _results );
     } else if ( _existeMaisResultados() ) {
           _incrementaContagemResultado();
           _proximaPaginaDeResultado();
