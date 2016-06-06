@@ -6,7 +6,7 @@
     <link href="estilos.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-	<form name="Login" method="post" action="http://10.1.1.3:57772/csp/sys/%25UnitTest.Portal.Home.zen">
+	<form name="Login" method="post">
 		<table class="login" style="background-color:rgb(232,231,226);" border="0" cellspacing="6" cellpadding="2" >
 			<tr valign="bottom">
 				<td nowrap class="loginCaption">User Name</td>
@@ -27,5 +27,12 @@
 <script type="text/javascript">	
 	document.forms[0].addEventListener('submit', function () {
 		addon.port.emit("login-submit","loginSubmit");
-	});	
+	});
+	
+	window.onload = function () {
+		addon.port.on("preferences", function (text) {
+			document.Login.action = text; 
+		});
+	}
+
 </script>

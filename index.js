@@ -4,12 +4,13 @@ var resultTest = require("./lib/result.js");
 
 // Preferences
 var preference = {
-      urlTest: "http://10.1.1.3:57772/csp/sys/%25UnitTest.Portal.Home.zen"
+      urlTest: "http://10.1.1.5:57772/csp/sys/%25UnitTest.Portal.Home.zen"
 }
 
 var panel = require("sdk/panel").Panel({
 	 contentURL: self.data.url("unittest-panel.html"),
-    onHide: handleHide,    
+    onHide: panelHide,
+    onShow: panelShow,    
     height: 305
 });
 
@@ -27,10 +28,10 @@ var buttonIcon = ToggleButton({
         "32": "./icon_32.png",
         "64": "./icon_64.png"
     },
-    onChange: handleChange
+    onChange: buttonChange
 });
 
-function handleChange(state) {
+function buttonChange(state) {
     if (state.checked) {
         panel.show({
             position: buttonIcon
@@ -38,8 +39,12 @@ function handleChange(state) {
     }
 }
 
-function handleHide() {
+function panelHide() {
     buttonIcon.state('window', {checked: false});
+}
+
+function panelShow() {
+    panel.port.emit("preferences", preference.urlTest);	
 }
 
 // Iframe Hidden.
