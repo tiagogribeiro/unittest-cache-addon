@@ -59,7 +59,8 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
             if (requiresLogin) {
                 panel.contentURL = self.data.url("unittest-login.html");
             } else {
-            	resultTest.monteResultado(frame.element.contentDocument.body);
+            	var tests = resultTest.testsPerformed(frame.element.contentDocument.body);
+            	panel.port.emit("testsPerformed", tests);            	
             }
             
         }, true, true);       
