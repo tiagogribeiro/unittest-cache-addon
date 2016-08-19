@@ -1,6 +1,7 @@
 "use strict";
 var self = require("sdk/self");
 var resultTest = require("./lib/result.js");
+var tabs = require("sdk/tabs");
 
 // Preferences
 var preference = {
@@ -17,6 +18,10 @@ var panel = require("sdk/panel").Panel({
 panel.port.on("login-submit", function (text) {
 	panel.contentURL = self.data.url("unittest-panel.html");
 	hiddenFrame.element.contentWindow.location = preference.urlTest;
+});
+
+panel.port.on("load-suite", function (link) {
+	tabs.open(link);
 });
 
 var { ToggleButton } = require("sdk/ui/button/toggle");
