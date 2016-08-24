@@ -6,33 +6,68 @@
     <link href="estilos.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-	<form name="Login" method="post">
-		<table class="login" style="background-color:rgb(232,231,226);" border="0" cellspacing="6" cellpadding="2" >
-			<tr valign="bottom">
-				<td nowrap class="loginCaption">User Name</td>
-				<td style="padding-top:18px;padding-right:20px;"><input type="text" size="20" name="CacheUserName" class="loginInput" value=""/></td>
- 			</tr>
-			<tr valign="bottom">
-				<td nowrap class="loginCaption">Password</td>
-				<td><input type="password" size="20" name="CachePassword" class="loginInput"/></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-	 			<td style="padding-bottom:10px;"><input type="submit" name="CacheLogin" class="button" value="Login"></td>
-			</tr>
-		</table>
-	</form>
+    <div class="box-login">
+        <h3>
+            Please, enter with your information<br/>
+            <small>Infromation of access the portal administration<small>
+        </h3>
+        <form name="Login" method="post">
+            <ul>
+                <li>
+                    <input placeholder="User Name" type="text" size="20" name="CacheUserName" class="loginInput" value=""/>                    
+                </li>                
+                <li>
+                    <input placeholder="Password" type="password" size="20" name="CachePassword" class="loginInput"/>
+                </li>
+                <li>
+                    <input type="submit" name="CacheLogin" class="button" value="Login">
+                    <input type="button" id="btn-config" name="Config" class="button" value="Configuration">
+                </li>
+            </ul>           
+        </form>
+    </div> 
+    <div id="box-configuration" class="box-configuration">
+        <label title="Url of access results the unit test.">            
+            Url:
+            <input type="text" id="url" />
+        </label>
+        <br/>
+         <label title="Url of access results the unit test.">            
+            Module:
+            <input type="text" id="url" />
+        </label>
+        <br/>
+        <label>
+            <input type="button" value="Save" />
+        </label>
+    </div>
 </body>
 </html>
 <script type="text/javascript">	
-	document.forms[0].addEventListener('submit', function () {
+	
+        var Configuration = {
+            openWindow : function(){
+                document.getElementById("box-configuration").style.display = 'block';
+            },
+            closeWindo : function(){
+                document.getElementById("box-configuration").style.display = 'none';
+            },            
+            save : function(){
+                
+            }
+        };
+    
+        document.forms[0].addEventListener('submit', function () {
 		addon.port.emit("login-submit","loginSubmit");
 	});
 	
 	window.onload = function () {
-		addon.port.on("preferences", function (text) {
-			document.Login.action = text; 
-		});
+            addon.port.on("preferences", function (text) {
+                    document.Login.action = text; 
+            });
+            document.getElementById("btn-config").addEventListener('click', function () {
+                alert('aqui');
+            });
 	}
 
 </script>

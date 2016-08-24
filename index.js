@@ -4,14 +4,14 @@ var resultTest = require("./lib/result.js");
 
 // Preferences
 var preference = {
-      urlTest: "http://10.1.1.5:57772/csp/sys/%25UnitTest.Portal.Home.zen"
+      urlTest: "http://192.168.1.6:57772/csp/sys/%25UnitTest.Portal.Home.zen"
 }
 
 var panel = require("sdk/panel").Panel({
 	 contentURL: self.data.url("unittest-panel.html"),
     onHide: panelHide,
     onShow: panelShow,    
-    height: 305
+    height: 250
 });
 
 panel.port.on("login-submit", function (text) {
@@ -55,7 +55,7 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
         var frame = this;
         this.element.addEventListener("DOMContentLoaded", function () {        	   
         	   
-	    		var requiresLogin = (frame.element.contentDocument.title.indexOf("Login") > -1);
+	    var requiresLogin = true; //(frame.element.contentDocument.title.indexOf("Login") > -1);
             if (requiresLogin) {
                 panel.contentURL = self.data.url("unittest-login.html");
             } else {
