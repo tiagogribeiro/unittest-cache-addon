@@ -1,73 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <title>unittest adon</title>         
-    <link href="estilos.css" rel="stylesheet" type="text/css"/>
+    <link href="css/estilos.css" rel="stylesheet" type="text/css"/>
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <!--
+    TODO: Remover o acesso via cdn.
+    -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="box-login">
-        <h3>
+    <div class="container">
+        <h5>
             Please, enter with your information<br/>
             <small>Infromation of access the portal administration<small>
-        </h3>
-        <form name="Login" method="post">
-            <ul>
-                <li>
-                    <input placeholder="User Name" type="text" size="20" name="CacheUserName" class="loginInput" value=""/>                    
-                </li>                
-                <li>
-                    <input placeholder="Password" type="password" size="20" name="CachePassword" class="loginInput"/>
-                </li>
-                <li>
-                    <input type="submit" name="CacheLogin" class="button" value="Login">
-                    <input type="button" id="btn-config" name="Config" class="button" value="Configuration">
-                </li>
-            </ul>           
-        </form>
-    </div> 
-    <div id="box-configuration" class="box-configuration">
-        <label title="Url of access results the unit test.">            
-            Url:
-            <input type="text" id="url" />
-        </label>
-        <br/>
-         <label title="Url of access results the unit test.">            
-            Module:
-            <input type="text" id="url" />
-        </label>
-        <br/>
-        <label>
-            <input type="button" value="Save" />
-        </label>
-    </div>
-</body>
-</html>
-<script type="text/javascript">	
-	
-        var Configuration = {
-            openWindow : function(){
-                document.getElementById("box-configuration").style.display = 'block';
-            },
-            closeWindo : function(){
-                document.getElementById("box-configuration").style.display = 'none';
-            },            
-            save : function(){
-                
-            }
-        };
-    
-        document.forms[0].addEventListener('submit', function () {
-		addon.port.emit("login-submit","loginSubmit");
-	});
-	
-	window.onload = function () {
-            addon.port.on("preferences", function (text) {
-                    document.Login.action = text; 
-            });
-            document.getElementById("btn-config").addEventListener('click', function () {
-                alert('aqui');
-            });
-	}
+        </h5>
+        <div class="row">
+            <div class="col-sm-12">
+                <form name="Login" method="post">
+                    <div class="form-group">                    
+                        <label for="loginInput">Login</label>
+                        <input class="form-control" placeholder="User Name" type="text" size="20" name="CacheUserName" value=""/>
+                    </div>
+                    <div class="form-group">
+                        <label for="CachePassword">Password</label>                    
+                         <input class="form-control" placeholder="Password" type="password" size="20" name="CachePassword" />
+                    </div>               
+                    <input class="btn btn-primary" type="submit" value="Login">
+                    <input class="btn btn-default" type="button" data-toggle="modal" data-target="#configuration" value="Configuration">                                           
+                </form>
+            </div>
+        </div>
+   
+        <div class="modal fade" id="configuration" role="dialog">
+            <div class="modal-dialog">
 
+              <!-- Modal content-->
+              <div class="modal-content">
+                 <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Configuration</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="loginInput">Url Server</label>
+                                <input class="form-control" placeholder="Server Caché" type="text" size="20" name="ServerCache" value=""/>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div> 
+              </div>
+
+            </div>
+        </div>
+    </div> 
+</body>
+<script type="text/javascript">	      
+    document.forms[0].addEventListener('submit', function () {
+            addon.port.emit("login-submit","loginSubmit");
+    });
+
+    window.onload = function () {
+        addon.port.on("preferences", function (text) {
+                document.Login.action = text; 
+        });            
+    }
 </script>
+</html>

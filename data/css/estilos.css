@@ -1,0 +1,49 @@
+/*body{
+	line-height:2; 
+	font-size:10px; 
+	background:#F2F1F0; 
+	margin:auto;
+}*/
+
+.panel-div{
+	position:relative; 
+	float:left; 
+	width:283px; 
+	height:auto; 
+	background:#F2F1F0; 
+	padding:0 0 17px 17px;
+}
+
+.module-div{
+	position:relative; 
+	float: left; 
+	width:125px; 
+	height:125px; 
+	margin-top:17px;
+	cursor:pointer;  
+}
+
+.module-div:hover{
+	--
+}
+
+.module-passed{
+	background:#41A83F;
+}
+
+.module-error{
+	background:#BA272D; 
+}
+
+.left{
+	margin-left:17px;
+}
+
+.text{
+	list-style-type:none; 
+	font-family: Courier;
+	font-size: 13px;
+	font-weight: bold;	
+	margin-left:5px;
+	color:#FFF;
+}

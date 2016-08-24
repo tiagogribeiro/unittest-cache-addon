@@ -5,7 +5,7 @@ var tabs = require("sdk/tabs");
 
 // Preferences
 var preference = {
-      urlTest: "http://192.168.1.6:57772/csp/sys/%25UnitTest.Portal.Home.zen"
+      urlTest: "http://10.1.1.150:57772/csp/sys/%25UnitTest.Portal.Home.zen"
 }
 
 var panel = require("sdk/panel").Panel({
@@ -16,8 +16,8 @@ var panel = require("sdk/panel").Panel({
 });
 
 panel.port.on("login-submit", function (text) {
-	panel.contentURL = self.data.url("unittest-panel.html");
-	hiddenFrame.element.contentWindow.location = preference.urlTest;
+    panel.contentURL = self.data.url("unittest-panel.html");
+    hiddenFrame.element.contentWindow.location = preference.urlTest;
 });
 
 panel.port.on("load-suite", function (link) {
@@ -60,7 +60,7 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
         var frame = this;
         this.element.addEventListener("DOMContentLoaded", function () {        	   
         	   
-	    var requiresLogin = true; //(frame.element.contentDocument.title.indexOf("Login") > -1);
+	    var requiresLogin = (frame.element.contentDocument.title.indexOf("Login") > -1);
             if (requiresLogin) {
                 panel.contentURL = self.data.url("unittest-login.html");
             } else {
