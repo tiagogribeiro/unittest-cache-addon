@@ -19,12 +19,20 @@ body{
 	float: left; 
 	width:125px; 
 	height:125px; 
-	margin-top:17px; 
-	background:#E7E7E7; 
+	margin-top:17px;
+	cursor:pointer;  
 }
 
 .module-div:hover{
-	background:#DADADA;
+	--
+}
+
+.module-passed{
+	background:#41A83F;
+}
+
+.module-error{
+	background:#BA272D; 
 }
 
 .left{
@@ -33,7 +41,11 @@ body{
 
 .text{
 	list-style-type:none; 
+	font-family: Courier;
+	font-size: 13px;
+	font-weight: bold;	
 	margin-left:5px;
+	color:#FFF;
 }
 
 
