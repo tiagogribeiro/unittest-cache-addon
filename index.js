@@ -95,8 +95,8 @@ function getUrlServer(){
 /**
  * Notificação que o login foi submetido.
  */
-panel.port.on("login-submit", function () {
-    console.log('Submetendo....');   
+panel.port.on("login-submit", function (text) {
+    console.log('Submetendo....')    
     hiddenFrame.element.contentWindow.location = getUrlServer();
 });
 
@@ -104,11 +104,10 @@ panel.port.on("login-submit", function () {
  * Registrando as configurações do usuário.
  * @author Tiago G. Ribeiro
  */
-panel.port.on("save-preference", function () {        
-    var prefs = require("sdk/simple-prefs").prdataefs;
-        prefs["urlTest"] =  data.url;
-        prefs["namespace"]=  data.namespace;
-        
+panel.port.on("save-preference", function (data) {        
+    var prefs = require("sdk/simple-prefs").prefs;
+    prefs["urlTest"] =  data.url;
+    prefs["namespace"]=  data.namespace;
     panel.port.emit("configure",false);
     panel.port.emit('urlSubmit',getUrlServer());
 });
@@ -117,7 +116,7 @@ panel.port.on("save-preference", function () {
  * Obtendo as configurações do usuário.
  * @author Tiago G. Ribeiro
  */
-panel.port.on("get-preference", function () {       
+panel.port.on("get-preference", function (data) {       
     var prefs = require("sdk/simple-prefs").prefs;
     var result = { url : prefs.urlTest, namespace : prefs.namespace};
     return result;
