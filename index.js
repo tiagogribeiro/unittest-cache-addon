@@ -3,26 +3,59 @@ var self = require("sdk/self");
 var resultTest = require("./lib/result.js");
 var tabs = require("sdk/tabs");
 
-// Preferences
-var preference = {
-      urlTest: "http://10.1.1.150:57772/csp/sys/%25UnitTest.Portal.Home.zen"
+
+/**
+ * Carregando do painel principal do Addon.
+ * @type type
+ */
+var panel = require("sdk/panel").Panel({
+    contentURL: self.data.url("unittest-login.html"),
+    onHide: function() {
+        buttonIcon.state('window', {checked: false});
+    },
+    onShow: panelShow,
+    height: 320
+});
+
+function panelShow(){
+   var prefs = require("sdk/simple-prefs").prefs;
+   
+   var namespace = prefs["namespace"];
+   var urlServidor = prefs["urlTest"];
+   
+   if ((namespace!==undefined)&&(urlServidor!==undefined)){
+       hiddenFrame.element.contentWindow.location = getUrlServer();
+       panel.port.emit('urlSubmit',getUrlServer());
+       panel.port.emit('configure',false);
+   } else {
+       panel.port.emit('configure',true);
+   }
 }
 
-var panel = require("sdk/panel").Panel({
-	 contentURL: self.data.url("unittest-panel.html"),
-    onHide: panelHide,
-    onShow: panelShow,    
-    height: 250
-});
+/**
+ * Iframe oculto.
+ * @type Module hidden-frame|Module hidden-frame
+ */
+var hiddenFrames = require("sdk/frame/hidden-frame");
+var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
+    onReady: function () {
+        var frame = this;
+        this.element.addEventListener("DOMContentLoaded", function () {
+            
+            var isLoged = (frame.element.contentDocument.title.indexOf("Login") === -1);            
+            if (isLoged) {
+                panel.contentURL = self.data.url("unittest-login.html");                
+                panel.port.emit("login-failure");                    	
+            } else {                                                                                  
+                console.log("Ja logou:" + frame.element.contentDocument.title);
+                panel.contentURL = self.data.url("unittest-panel.html");
+                var tests = resultTest.testsPerformed( frame.element.contentDocument.body );    
+                panel.port.emit("testsPerformed", tests);                        
+            }
 
-panel.port.on("login-submit", function (text) {
-    panel.contentURL = self.data.url("unittest-panel.html");
-    hiddenFrame.element.contentWindow.location = preference.urlTest;
-});
-
-panel.port.on("load-suite", function (link) {
-	tabs.open(link);
-});
+        }, true, true);       
+    }
+}));
 
 var { ToggleButton } = require("sdk/ui/button/toggle");
 var buttonIcon = ToggleButton({
@@ -33,41 +66,59 @@ var buttonIcon = ToggleButton({
         "32": "./icon_32.png",
         "64": "./icon_64.png"
     },
-    onChange: buttonChange
-});
-
-function buttonChange(state) {
+    onChange: function(state) {
     if (state.checked) {
         panel.show({
             position: buttonIcon
         });        
     }
 }
+});
 
-function panelHide() {
-    buttonIcon.state('window', {checked: false});
+panel.port.on("load-suite", function (link) {
+    tabs.open(link);
+});
+
+/**
+ * Monta a url para consulta de resultados no servidor de testes.
+ * @returns {String}
+ */
+function getUrlServer(){
+    var prefs = require("sdk/simple-prefs").prefs;
+    var url = prefs["urlTest"];
+    var namespace = prefs["namespace"];
+    
+    var http = url+ '/csp/' + namespace + '/%25UnitTest.Portal.Home.zen';   
+    return http;
 }
 
-function panelShow() {
-    panel.port.emit("preferences", preference.urlTest);	
-}
+/**
+ * Notificação que o login foi submetido.
+ */
+panel.port.on("login-submit", function () {
+    console.log('Submetendo....');   
+    hiddenFrame.element.contentWindow.location = getUrlServer();
+});
 
-// Iframe Hidden.
-var hiddenFrames = require("sdk/frame/hidden-frame");
-var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
-    onReady: function () {
-        this.element.contentWindow.location = preference.urlTest;
-        var frame = this;
-        this.element.addEventListener("DOMContentLoaded", function () {        	   
-        	   
-	    var requiresLogin = (frame.element.contentDocument.title.indexOf("Login") > -1);
-            if (requiresLogin) {
-                panel.contentURL = self.data.url("unittest-login.html");
-            } else {
-            	var tests = resultTest.testsPerformed(frame.element.contentDocument.body);
-            	panel.port.emit("testsPerformed", tests);            	
-            }
-            
-        }, true, true);       
-    }
-}));
+/**
+ * Registrando as configurações do usuário.
+ * @author Tiago G. Ribeiro
+ */
+panel.port.on("save-preference", function () {        
+    var prefs = require("sdk/simple-prefs").prdataefs;
+        prefs["urlTest"] =  data.url;
+        prefs["namespace"]=  data.namespace;
+        
+    panel.port.emit("configure",false);
+    panel.port.emit('urlSubmit',getUrlServer());
+});
+
+/**
+ * Obtendo as configurações do usuário.
+ * @author Tiago G. Ribeiro
+ */
+panel.port.on("get-preference", function () {       
+    var prefs = require("sdk/simple-prefs").prefs;
+    var result = { url : prefs.urlTest, namespace : prefs.namespace};
+    return result;
+});

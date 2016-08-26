@@ -17,24 +17,35 @@
 </head>
 <body>
     <div class="container">
-        <h5>
+        <h4>
             Please, enter with your information<br/>
             <small>Infromation of access the portal administration<small>
-        </h5>
-        <div class="row">
+        </h4>
+                
+        <div class="alert alert-info" id="info-configure" role="alert">
+            <strong>Please</strong> configure your addon.
+        </div>
+        
+        <div class="alert alert-info" id="login-failure" role="alert">
+            Login fail, try again.
+        </div>
+        
+        
+        <div class="row">                                    
             <div class="col-sm-12">
                 <form name="Login" method="post">
                     <div class="form-group">                    
                         <label for="loginInput">Login</label>
-                        <input class="form-control" placeholder="User Name" type="text" size="20" name="CacheUserName" value=""/>
+                        <input class="form-control" placeholder="User Name" required type="text" size="20" name="CacheUserName"/>
                     </div>
                     <div class="form-group">
                         <label for="CachePassword">Password</label>                    
-                         <input class="form-control" placeholder="Password" type="password" size="20" name="CachePassword" />
+                        <input class="form-control" placeholder="Password" required type="password" size="20" name="CachePassword" />
                     </div>               
-                    <input class="btn btn-primary" type="submit" value="Login">
-                    <input class="btn btn-default" type="button" data-toggle="modal" data-target="#configuration" value="Configuration">                                           
+                    <input class="btn btn-primary" type="submit" name="CacheLogin" id="CacheLogin" value="Login">
+                    <input class="btn btn-default" type="button" data-toggle="modal" data-target="#configuration" value="Configuration">
                 </form>
+               
             </div>
         </div>
    
@@ -51,13 +62,17 @@
                         <form>
                             <div class="form-group">
                                 <label for="loginInput">Url Server</label>
-                                <input class="form-control" placeholder="Server Caché" type="text" size="20" name="ServerCache" value=""/>
+                                <input class="form-control" placeholder="Server Caché" type="text" size="20" id="inputServerCache" name="inputServerCache" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginInput">Namespace</label>
+                                <input class="form-control" placeholder="Namespace" type="text" size="20" id="inputNameSpace" name="inputNameSpace" value=""/>
                             </div>
                         </form>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-primary" id="save-preference" data-dismiss="modal">Save</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div> 
               </div>
@@ -67,14 +82,47 @@
     </div> 
 </body>
 <script type="text/javascript">	      
-    document.forms[0].addEventListener('submit', function () {
-            addon.port.emit("login-submit","loginSubmit");
+    
+    getPreferences = function(){
+        var preferences = addon.port.emit("get-preference");
+        console.log("Preferencia carregada:" + preferences.url);
+    };
+    
+    addon.port.on("urlSubmit", function (text) {
+        console.log('Definio a url....');
+        document.Login.action = text; 
     });
 
-    window.onload = function () {
-        addon.port.on("preferences", function (text) {
-                document.Login.action = text; 
-        });            
+    addon.port.on("configure", function (enable) {
+        if (enable){
+            $("#info-configure").show();
+            $("#configuration").modal();
+        } else {
+            $("#info-configure").hide();
+        }
+    });
+    
+    addon.port.on("login-failure", function () {
+        $("#login-failure").show();
+    });
+
+    
+    window.onload = function () {       
+        
+        $("#info-configure,#login-failure").hide();
+        document.forms[0].addEventListener('submit', function () {
+            addon.port.emit("login-submit","loginSubmit");
+        });
+
+        document.getElementById('save-preference').addEventListener('click', function () {           
+            addon.port.emit("save-preference", 
+                { 
+                  url : document.getElementById('inputServerCache').value, 
+                  namespace: document.getElementById('inputNameSpace').value
+                });
+        });
+        
+        console.log(getPreferences());
     }
 </script>
 </html>
