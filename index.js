@@ -42,13 +42,12 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
         var frame = this;
         this.element.addEventListener("DOMContentLoaded", function () {
             
-            var isLoged = (frame.element.contentDocument.title.indexOf("Login") === -1);            
+            var isLoged = (frame.element.contentDocument.title.indexOf("Login") > -1);            
             if (isLoged) {
                 panel.contentURL = self.data.url("unittest-login.html");                
                 panel.port.emit("login-failure");                    	
             } else {                                                                                  
                 console.log("Ja logou:" + frame.element.contentDocument.title);
-                panel.contentURL = self.data.url("unittest-panel.html");
                 var tests = resultTest.testsPerformed( frame.element.contentDocument.body );    
                 panel.port.emit("testsPerformed", tests);                        
             }
@@ -96,7 +95,8 @@ function getUrlServer(){
  * Notificação que o login foi submetido.
  */
 panel.port.on("login-submit", function (text) {
-    console.log('Submetendo....')    
+    console.log('Submetendo....');
+    panel.contentURL = self.data.url("unittest-panel.html");    
     hiddenFrame.element.contentWindow.location = getUrlServer();
 });
 
