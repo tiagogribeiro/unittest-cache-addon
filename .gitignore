@@ -1,2 +1,5 @@
 # Ignorando a instalação do plugin.
 unittest-cache-addon.xpi
+
+### NetBeans ###
+/nbproject/
