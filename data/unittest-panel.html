@@ -7,14 +7,15 @@
     <script type="text/javascript" src="../lib/panel.js"/></script>    
 </head>
 <body>
+    <h4>Results</h4>
     <div id="unittest-panel" class="panel-div">
     </div>
 </body>
 </html>
 <script type="text/javascript">
 	window.onload = function () {
-		addon.port.on("testsPerformed", function (object) {
-			panel.load(object); 
-		});		
+            addon.port.on("testsPerformed", function (object) {
+                panel.load(object); 
+            });		
 	}	
 </script>

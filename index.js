@@ -37,15 +37,15 @@ function panelShow(){
  * @type Module hidden-frame|Module hidden-frame
  */
 var hiddenFrames = require("sdk/frame/hidden-frame");
-var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
+var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({    
     onReady: function () {
-        var frame = this;
-        this.element.addEventListener("DOMContentLoaded", function () {
+        var frame = this;        
+        this.element.addEventListener("DOMContentLoaded", function () {                               
             
             var isLoged = (frame.element.contentDocument.title.indexOf("Login") === -1);            
             if (isLoged) {
                 panel.contentURL = self.data.url("unittest-login.html");                
-                panel.port.emit("login-failure");                    	
+                panel.port.emit("login-failure");                
             } else {                                                                                  
                 console.log("Ja logou:" + frame.element.contentDocument.title);
                 panel.contentURL = self.data.url("unittest-panel.html");
@@ -95,7 +95,7 @@ function getUrlServer(){
 /**
  * Notificação que o login foi submetido.
  */
-panel.port.on("login-submit", function (text) {
+panel.port.on("login-submit", function (text) {  
     console.log('Submetendo....')    
     hiddenFrame.element.contentWindow.location = getUrlServer();
 });
@@ -104,10 +104,13 @@ panel.port.on("login-submit", function (text) {
  * Registrando as configurações do usuário.
  * @author Tiago G. Ribeiro
  */
-panel.port.on("save-preference", function (data) {        
+panel.port.on("save-preference", function (data) {
+    
+    var port = (data.port!=="")  ? ":"+data.port : "";
+    
     var prefs = require("sdk/simple-prefs").prefs;
-    prefs["urlTest"] =  data.url;
-    prefs["namespace"]=  data.namespace;
+    prefs["urlTest"] =  data.protocol + data.url + port;
+    prefs["namespace"]=   data.namespace;this
     panel.port.emit("configure",false);
     panel.port.emit('urlSubmit',getUrlServer());
 });
