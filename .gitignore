@@ -1,2 +1,11 @@
 # Ignorando a instalação do plugin.
 unittest-cache-addon.xpi
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+.nb-gradle/

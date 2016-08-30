@@ -14,7 +14,8 @@ var panel = require("sdk/panel").Panel({
         buttonIcon.state('window', {checked: false});
     },
     onShow: panelShow,
-    height: 320
+    height: 320,
+    width: 450
 });
 
 function panelShow(){
