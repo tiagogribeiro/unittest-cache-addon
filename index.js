@@ -9,7 +9,7 @@ var tabs = require("sdk/tabs");
  * @type type
  */
 var panel = require("sdk/panel").Panel({
-    contentURL: self.data.url("unittest-login.html"),
+    contentURL: self.data.url("unittest-default.html"),
     onHide: function() {
         buttonIcon.state('window', {checked: false});
     },
@@ -43,14 +43,16 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
         var frame = this;        
         this.element.addEventListener("DOMContentLoaded", function () {                               
             
-            var isLoged = (frame.element.contentDocument.title.indexOf("Login") > -1);            
+            var isLoged = (frame.element.contentDocument.title.indexOf("UnitTest") > -1);
+            console.log("isLoged" + isLoged);
             if (isLoged) {
-                panel.contentURL = self.data.url("unittest-login.html");                
-                panel.port.emit("login-failure");                
-            } else {                                                                                  
+            	 panel.contentURL = self.data.url("unittest-panel.html");
                 console.log("Ja logou:" + frame.element.contentDocument.title);
                 var tests = resultTest.testsPerformed( frame.element.contentDocument.body );    
-                panel.port.emit("testsPerformed", tests);                        
+                panel.port.emit("testsPerformed", tests);
+            } else {                                                                                  
+                panel.contentURL = self.data.url("unittest-default.html");                
+                panel.port.emit("login-failure");                
             }
 
         }, true, true);       
@@ -96,8 +98,7 @@ function getUrlServer(){
  * Notificação que o login foi submetido.
  */
 panel.port.on("login-submit", function (text) {
-    console.log('Submetendo....');
-    panel.contentURL = self.data.url("unittest-panel.html");    
+    console.log('Submetendo....');    
     hiddenFrame.element.contentWindow.location = getUrlServer();
 });
 
