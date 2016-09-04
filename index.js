@@ -2,6 +2,7 @@
 var self = require("sdk/self");
 var resultTest = require("./lib/result.js");
 var tabs = require("sdk/tabs");
+var { setTimeout } = require("sdk/timers");
 
 
 /**
@@ -20,10 +21,10 @@ var panel = require("sdk/panel").Panel({
 
 function panelShow(){
    var prefs = require("sdk/simple-prefs").prefs;
-   
+
    var namespace = prefs["namespace"];
    var urlServidor = prefs["urlTest"];
-   
+
    if ((namespace!==undefined)&&(urlServidor!==undefined)){
        hiddenFrame.element.contentWindow.location = getUrlServer();
        panel.port.emit('urlSubmit',getUrlServer());
@@ -38,24 +39,25 @@ function panelShow(){
  * @type Module hidden-frame|Module hidden-frame
  */
 var hiddenFrames = require("sdk/frame/hidden-frame");
-var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({    
+var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
     onReady: function () {
-        var frame = this;        
-        this.element.addEventListener("DOMContentLoaded", function () {                               
-            
+        var frame = this;
+        this.element.addEventListener("DOMContentLoaded", function () {
+
             var isLoged = (frame.element.contentDocument.title.indexOf("UnitTest") > -1);
-            console.log("isLoged" + isLoged);
             if (isLoged) {
-            	 panel.contentURL = self.data.url("unittest-panel.html");
-                console.log("Ja logou:" + frame.element.contentDocument.title);
-                var tests = resultTest.testsPerformed( frame.element.contentDocument.body );    
-                panel.port.emit("testsPerformed", tests);
-            } else {                                                                                  
-                panel.contentURL = self.data.url("unittest-default.html");                
-                panel.port.emit("login-failure");                
+            	panel.contentURL = self.data.url("unittest-panel.html");
+                var results = resultTest.testsPerformed( frame.element.contentDocument.body );
+                setTimeout(function(){
+                    panel.port.emit("render-results", results);
+                },200);
+
+            } else {
+                panel.contentURL = self.data.url("unittest-default.html");
+                panel.port.emit("login-failure");
             }
 
-        }, true, true);       
+        }, true, true);
     }
 }));
 
@@ -72,7 +74,7 @@ var buttonIcon = ToggleButton({
     if (state.checked) {
         panel.show({
             position: buttonIcon
-        });        
+        });
     }
 }
 });
@@ -89,8 +91,8 @@ function getUrlServer(){
     var prefs = require("sdk/simple-prefs").prefs;
     var url = prefs["urlTest"];
     var namespace = prefs["namespace"];
-    
-    var http = url+ '/csp/' + namespace + '/%25UnitTest.Portal.Home.zen';   
+
+    var http = url+ '/csp/' + namespace + '/%25UnitTest.Portal.Home.zen';
     return http;
 }
 
@@ -98,7 +100,7 @@ function getUrlServer(){
  * Notificação que o login foi submetido.
  */
 panel.port.on("login-submit", function (text) {
-    console.log('Submetendo....');    
+    console.log('Submetendo....');
     hiddenFrame.element.contentWindow.location = getUrlServer();
 });
 
@@ -107,9 +109,9 @@ panel.port.on("login-submit", function (text) {
  * @author Tiago G. Ribeiro
  */
 panel.port.on("save-preference", function (data) {
-    
+
     var port = (data.port!=="")  ? ":"+data.port : "";
-    
+
     var prefs = require("sdk/simple-prefs").prefs;
     prefs["urlTest"] =  data.protocol + data.url + port;
     prefs["namespace"]=   data.namespace;this
@@ -121,7 +123,7 @@ panel.port.on("save-preference", function (data) {
  * Obtendo as configurações do usuário.
  * @author Tiago G. Ribeiro
  */
-panel.port.on("get-preference", function (data) {       
+panel.port.on("get-preference", function (data) {
     var prefs = require("sdk/simple-prefs").prefs;
     var result = { url : prefs.urlTest, namespace : prefs.namespace};
     return result;

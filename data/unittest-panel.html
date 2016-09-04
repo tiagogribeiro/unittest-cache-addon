@@ -1,19 +1,29 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf8">
-    <title>unittest adon</title>         
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title></title>
     <link href="css/estilos.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="../lib/panel.js"/></script>    
+    <script src="jquery-3.1.0/jquery-3.1.0.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../lib/panel.js"/></script>
+    <link href="bootstrap-3.3-7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <h4>Results</h4>
-    <div id="unittest-panel" class="panel-div">
+    <div class="container" id="container">
+        <div id="head">
+            <h4>Suites of tests</h4>
+        </div>
+        <!-- Results of tests here -->
+    </div>
+    <div id="isNotResult" class="rows hide">
+        <h4>I don't exist results</h4>
     </div>
 </body>
 </html>
 <script type="text/javascript">
-   addon.port.on("testsPerformed", function (object) {
-      panel.load(object); 
-   });
+    addon.port.on("render-results", function (results) {
+        panelRender.load(results);
+    });
 </script>
