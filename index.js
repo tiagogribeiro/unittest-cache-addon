@@ -15,8 +15,8 @@ var panel = require("sdk/panel").Panel({
         buttonIcon.state('window', {checked: false});
     },
     onShow: panelShow,
-    height: 320,
-    width: 450
+    height: 370,
+    width: 430
 });
 
 function panelShow(){
@@ -50,7 +50,7 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
                 var results = resultTest.testsPerformed( frame.element.contentDocument.body );
                 setTimeout(function(){
                     panel.port.emit("render-results", results);
-                },200);
+                },500);
 
             } else {
                 panel.contentURL = self.data.url("unittest-default.html");
