@@ -3,7 +3,7 @@ var self = require("sdk/self");
 var resultTest = require("./lib/result.js");
 var tabs = require("sdk/tabs");
 var { setTimeout } = require("sdk/timers");
-
+var pageResultLoaded = false;
 
 /**
  * Carregando do painel principal do Addon.
@@ -46,7 +46,10 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
 
             var isLoged = (frame.element.contentDocument.title.indexOf("UnitTest") > -1);
             if (isLoged) {
-            	panel.contentURL = self.data.url("unittest-panel.html");
+                if (resultPageLoaded() == false) {
+            	     panel.contentURL = self.data.url("unittest-panel.html");
+                }
+
                 var results = resultTest.testsPerformed( frame.element.contentDocument.body );
                 setTimeout(function(){
                     panel.port.emit("render-results", results);
@@ -60,6 +63,10 @@ var hiddenFrame = hiddenFrames.add(hiddenFrames.HiddenFrame({
         }, true, true);
     }
 }));
+
+function resultPageLoaded() {
+    return (panel.contentURL == self.data.url("unittest-panel.html"))
+}
 
 var { ToggleButton } = require("sdk/ui/button/toggle");
 var buttonIcon = ToggleButton({
