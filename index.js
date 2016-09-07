@@ -3,7 +3,6 @@ var self = require("sdk/self");
 var resultTest = require("./lib/result.js");
 var tabs = require("sdk/tabs");
 var { setTimeout } = require("sdk/timers");
-var pageResultLoaded = false;
 
 /**
  * Carregando do painel principal do Addon.
