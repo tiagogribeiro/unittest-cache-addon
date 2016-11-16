@@ -19,20 +19,22 @@
             Access denied.<br/>
             <small>Service requires login.<small>
         </h4>
-
         <div class="alert alert-info" id="info-configure" role="alert">
-            <strong>Please</strong> configure your addon.
-        </div>
+            <center>
+                <strong>Please</strong> configure your addon.
+            </center>
+        </div><br/><br/>
 
-        <div class="alert alert-info" id="login-failure" role="alert">
+        <div class="alert alert-info hide" id="login-failure" role="alert">
             Login fail, try again.
         </div>
-
-
+        <br/><br/><br/>
         <div class="row">
-            <div class="col-sm-12">
-               <input class="btn btn-primary" type="button" name="continue" id="continue" value="Continue">
-               <input class="btn btn-default" type="button" data-toggle="modal" data-target="#configuration" value="Configuration">
+            <div class="col-xs-12 text-center">
+               <button class="btn btn-primary" type="button" name="continue" id="continue">Continue</button>
+               <button class="btn btn-default" type="button" data-toggle="modal" data-target="#configuration">
+                    <i alt="Open configuration." title="Open configuration." class="glyphicon glyphicon-cog"></i>
+               </button>
             </div>
         </div>
 
@@ -54,7 +56,7 @@
 
                             <div class="form-group col-xs-8">
                                 <label for="loginInput">Url Server</label>
-                                <input class="form-control" required placeholder="10.1.1.1" type="text"  id="inputServerCache" name="inputServerCache" value=""/>
+                                <input class="form-control" required placeholder="10.1.1.1" type="text"  id="inputUrl" name="inputUrl" value=""/>
                             </div>
                             <div class="form-group col-xs-4">
                                 <label for="loginInput">Port</label>
@@ -83,11 +85,6 @@
 </body>
 <script type="text/javascript">
 
-    getPreferences = function(){
-        var preferences = addon.port.emit("get-preference")
-        console.log("Preferencia carregada:" + preferences.url);
-    };
-
     addon.port.on("configure", function (enable) {
         if (enable){
             $("#info-configure").show();
@@ -98,30 +95,39 @@
     });
 
     addon.port.on("login-failure", function () {
-        $("#login-failure").show();
+        $("#login-failure").removeClass('hide');
     });
 
+    $(document).ready(function () {
 
+        $("#info-configure").hide();
 
-    window.onload = function () {
-
-        $("#info-configure,#login-failure").hide();
-
-		  document.getElementById("continue").onclick = function () {
+		$("#continue").on('click', function () {
 		      addon.port.emit("login-submit","loginSubmit");
-		  }
+		});
 
         $('#save-preference').on('click', function () {
             addon.port.emit("save-preference",
                 {
-                  url : $('#inputServerCache').val(),
+                  url : $('#inputUrl').val(),
                   namespace: $('#inputNameSpace').val(),
                   protocol: $('[name="protocol"]:checked').val(),
                   port : $('#inputPort').val()
                 });
         });
 
-        console.log(getPreferences());
-    }
+        $('#configuration').on('shown.bs.modal', function (e) {
+            addon.port.emit("get-preference",function( preference ){
+                $('#protocol').val( preference.serverProtocol );
+                $('#inputUrl').val( preference.serverUrl );
+                $('#inputPort').val( preference.serverPort );
+                $('#inputNameSpace').val( preference.namespace );
+            });
+        });
+
+        $('#configuration').on('hide.bs.modal', function (e) {
+            addon.port.emit("login-submit","loginSubmit");
+        });
+    });
 </script>
 </html>
